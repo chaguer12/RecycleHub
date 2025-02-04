@@ -1,0 +1,17 @@
+<div class="container">
+    <h2>Inscription</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <input type="email" formControlName="email" placeholder="Email" required>
+      <input type="password" formControlName="password" placeholder="Mot de passe" required>
+      <input type="text" formControlName="fullName" placeholder="Nom complet" required>
+      <input type="text" formControlName="address" placeholder="Adresse" required>
+      <input type="text" formControlName="phone" placeholder="Téléphone" required>
+      <input type="date" formControlName="birthDate" required>
+      
+      <button type="submit" [disabled]="registerForm.invalid">S'inscrire</button>
+    </form>
+  
+    <p *ngIf="successMessage">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" style="color:red;">{{ errorMessage }}</p>
+  </div>
+  
