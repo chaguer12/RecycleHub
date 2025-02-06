@@ -1,24 +1,21 @@
-<section class="bg-gray-100 min-h-screen flex flex-col items-center justify-center ">
-    <!-- Header Section -->
+<section class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
     <header class="text-center mb-8">
       <img src="../assets/Recycle hub_transparent-.png" alt="Company Logo" class="mx-auto mb-4 max-w-xs" />
-      <h1 class="text-3xl font-bold text-green-600">Sign Up for Recycling Collection</h1>
-      <p class="text-gray-600 mt-2">Create an account and help us keep the planet green!</p>
+      <h1 class="text-3xl font-bold text-green-600">Sign In to Recycling Collection</h1>
+      <p class="text-gray-600 mt-2">Enter your credentials to access your account.</p>
     </header>
   
-    <!-- Sign Up Form -->
     <div class="w-full max-w-sm bg-white p-6 rounded-lg shadow-lg">
-      <form>
-        
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <div class="mb-4">
           <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-          <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" required />
+          <input type="email" id="email" formControlName="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" required />
         </div>
         <div class="mb-4">
           <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input type="password" id="password" name="password" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" required />
+          <input type="password" id="password" formControlName="password" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" required />
         </div>
-              
+  
         <button type="submit" class="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
           Sign In
         </button>
