@@ -7,13 +7,15 @@ import * as bcrypt from 'bcryptjs';
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css',
-  standalone:false
+  standalone: false
 })
 export class SigninComponent {
-  email: string = '';
-  password: string = '';
   loginForm: FormGroup;
-  constructor(private fb: FormBuilder,private router: Router) {
+  errorMessage: string = '';
+  successMessage: string = '';
+  isLoading: boolean = false;
+
+  constructor(private fb: FormBuilder, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -21,23 +23,31 @@ export class SigninComponent {
   }
 
   onLogin() {
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.isLoading = true;
+
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-      
       const user = users.find((u: any) => u.email === email);
 
-      if (user && bcrypt.compareSync(password, user.password)) {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        alert('Login successful!');
-        this.router.navigate(['/demand']); 
-      } else {
-        alert('Invalid email or password.');
-      }
+      setTimeout(() => {
+        this.isLoading = false;
+        
+        if (user && bcrypt.compareSync(password, user.password)) {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.successMessage = '✅ Login successful! Redirecting...';
+          setTimeout(() => this.router.navigate(['/demand']), 1000);
+        } else {
+          this.errorMessage = '❌ Invalid email or password.';
+        }
+      }, 1000);
+    } else {
+      this.isLoading = false;
+      this.errorMessage = '❗ Please fill in all fields correctly.';
     }
   }
-  }
-
-
+}

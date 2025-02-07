@@ -8,22 +8,38 @@ import { HomeComponent } from './home/home.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { DemandComponent } from './demand/demand.component';
 import { FormsModule } from '@angular/forms';
+import{ MatDialogModule } from '@angular/material/dialog';
+import { UpdateProfileModalComponent } from './update-profile-modal/update-profile-modal.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
+import { CommonModule } from '@angular/common';
+import { DemandModule } from './demand/demand.module';
+import { UpdateProfileModalModule } from './update-profile-modal/update-profile-modal.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
-    HomeComponent,
-    SigninComponent,
-    DemandComponent
+    SigninComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule,
+    BrowserAnimationsModule,
+    StoreModule.forRoot({}),
+    CommonModule,
+    DemandModule,
+    UpdateProfileModalModule,
+    HomeModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

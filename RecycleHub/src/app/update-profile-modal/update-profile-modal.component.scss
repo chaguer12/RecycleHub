@@ -1,0 +1,15 @@
+::ng-deep .modal-dialog {
+  margin: 1.75rem auto;
+  max-width: 500px;
+}
+
+::ng-deep .modal {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+::ng-deep .modal-content {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+} 
