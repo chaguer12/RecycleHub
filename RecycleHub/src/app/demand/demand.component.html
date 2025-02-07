@@ -1,7 +1,7 @@
-<section class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+<section class="bg-gray-100 min-h-screen flex flex-col items-center p-6"> 
     <!-- Navbar -->
     <nav class="bg-green-600 w-full p-4 text-white flex justify-between items-center rounded-lg shadow-md">
-        <h1 class="text-xl font-bold"> Recycle Hub</h1>
+        <h1 class="text-xl font-bold">Recycle Hub</h1>
         <div>
             <button class="mx-2 hover:underline" (click)="showSection('profile')">Profile</button>
             <button class="mx-2 hover:underline" (click)="showSection('demand')">Make a Demand</button>
@@ -13,43 +13,102 @@
     <!-- Profile Section -->
     <div *ngIf="currentSection === 'profile'" class="bg-white p-6 mt-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-xl font-bold text-green-600 mb-4">My Profile</h2>
-        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Name:</strong> {{ user.fullName }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>City:</strong> {{ user.city }}</p>
         <p><strong>Address:</strong> {{ user.address }}</p>
+        <div class="flex justify-between mt-4">
+            <button class="bg-blue-500 px-4 py-2 text-white rounded shadow hover:bg-blue-700" (click)="editProfile()">Edit Profile</button>
+            <button class="bg-red-500 px-4 py-2 text-white rounded shadow hover:bg-red-700" (click)="deleteProfile()">Delete Profile</button>
+        </div>
     </div>
 
     <!-- Demand Form -->
-    <div *ngIf="currentSection === 'demand'" class="bg-white p-6 mt-6 rounded-lg shadow-lg w-full max-w-lg">
+    <div *ngIf="currentSection === 'demand'" class="bg-white p-6 mt-6 rounded-lg shadow-lg w-full max-w-lg h-[500px] overflow-auto">
         <h2 class="text-xl font-bold text-green-600 mb-4">Make a Recycling Demand</h2>
-        <form (submit)="submitDemand($event)">
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Type of Waste</label>
-                <select [(ngModel)]="newDemand.type" name="type" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md">
-                    <option value="Plastic">Plastic</option>
-                    <option value="Glass">Glass</option>
-                    <option value="Metal">Metal</option>
-                    <option value="Paper">Paper</option>
-                </select>
+        
+        <!-- Message de succès -->
+        <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            {{ successMessage }}
+        </div>
+
+        <!-- Message d'erreur général -->
+        <div *ngIf="formErrors['submit']" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {{ formErrors['submit'] }}
+        </div>
+
+        <form [formGroup]="demandForm" (ngSubmit)="onSubmit()">
+            <div class="space-y-4">
+                <div formArrayName="materials" class="mb-4">
+                    <h4 class="text-lg font-semibold">Matériaux à recycler</h4>
+                    <button type="button" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700" (click)="addMaterial()" [disabled]="materials.length >= 4">Ajouter</button>
+                    <div *ngFor="let material of materials.controls; let i=index" [formGroupName]="i" class="flex space-x-2 mt-2">
+                        <select formControlName="type" class="border p-2 rounded w-1/2">
+                            <option value="">Sélectionnez un type</option>
+                            <option *ngFor="let type of materialTypes" [value]="type">{{type | titlecase}}</option>
+                        </select>
+                        <input type="number" formControlName="weight" class="border p-2 rounded w-1/4" placeholder="Poids (kg)" min="1">
+                        <button type="button" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700" (click)="removeMaterial(i)" [disabled]="materials.length === 1">X</button>
+                    </div>
+                </div>
+                <div>
+                    <label>Adresse de collecte</label>
+                    <input type="text" formControlName="address" class="border p-2 rounded w-full" placeholder="Adresse complète">
+                </div>
+                <div>
+                    <label>Ville</label>
+                    <input type="text" formControlName="city" class="border p-2 rounded w-full" placeholder="Ville">
+                </div>
+                <div>
+                    <label>Date de collecte</label>
+                    <input type="date" formControlName="collectionDate" class="border p-2 rounded w-full" [min]="today">
+                </div>
+                <div>
+                    <label>Créneau horaire</label>
+                    <select formControlName="timeSlot" class="border p-2 rounded w-full">
+                        <option value="">Sélectionnez un créneau</option>
+                        <option *ngFor="let slot of timeSlots" [value]="slot">{{slot}}</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Photos des déchets (optionnel)</label>
+                    <input type="file" class="border p-2 rounded w-full" (change)="onFileSelect($event)" multiple accept="image/*">
+                </div>
+                <div>
+                    <label>Notes supplémentaires (optionnel)</label>
+                    <textarea formControlName="notes" class="border p-2 rounded w-full" rows="3" placeholder="Ajoutez des détails supplémentaires si nécessaire"></textarea>
+                </div>
+                
+                <!-- Affichage des erreurs pour chaque champ -->
+                <div *ngIf="formErrors['address']" class="text-red-500 text-sm mt-1">
+                    {{ formErrors['address'] }}
+                </div>
+
+                <div *ngIf="formErrors['weight']" class="text-red-500 text-sm mt-1">
+                    {{ formErrors['weight'] }}
+                </div>
+
+                <button type="submit" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 w-full disabled:opacity-50" 
+                        [disabled]="!demandForm.valid || isSubmitting">
+                    {{ isSubmitting ? 'Soumission en cours...' : 'Soumettre la demande' }}
+                </button>
             </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Quantity (kg)</label>
-                <input type="number" [(ngModel)]="newDemand.quantity" name="quantity" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" />
-            </div>
-            <button type="submit" class="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700">
-                Submit Demand
-            </button>
         </form>
     </div>
 
     <!-- Demand History -->
-    <div *ngIf="currentSection === 'history'" class="bg-white p-6 mt-6 rounded-lg shadow-lg w-full max-w-lg">
+    <div *ngIf="currentSection === 'history'" class="bg-white p-6 mt-6 rounded-lg shadow-lg w-full max-w-lg h-[500px] overflow-auto">
         <h2 class="text-xl font-bold text-green-600 mb-4">My Previous Demands</h2>
         <div *ngIf="demands.length === 0" class="text-gray-500">No demands found.</div>
-        <ul>
-            <li *ngFor="let demand of demands" class="border p-3 my-2 rounded-md shadow">
-                <p><strong>Type:</strong> {{ demand.type }}</p>
-                <p><strong>Quantity:</strong> {{ demand.quantity }} kg</p>
-                <p class="text-sm text-gray-500">Date: {{ demand.date }}</p>
+        <ul class="space-y-2">
+            <li *ngFor="let demand of demands" class="border p-3 rounded shadow">
+                <div *ngFor="let material of demand.materials">
+                    <p><strong>Type:</strong> {{ material.type }}</p>
+                    <p><strong>Poids:</strong> {{ material.weight }} kg</p>
+                </div>
+                <p class="text-sm text-gray-500">Date: {{ demand.collectionDate | date }}</p>
+                <p><strong>Status:</strong> {{ demand.status }}</p>
             </li>
         </ul>
     </div>
