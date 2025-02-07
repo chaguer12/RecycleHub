@@ -14,6 +14,10 @@ export class Demand {
         public status: 'pending' | 'occupied' | 'in_progress' | 'completed' | 'rejected',
         public createdAt: Date,
         public notes?: string,
-        public images?: string[]
+        public images?: string[],
+        public collectorId?: string,
+        public realWeight?: number,
+        public verificationPhotos?: string[],
+        public rejectionReason?: string
     ) {}
 } 

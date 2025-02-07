@@ -52,13 +52,18 @@ export class SignupComponent {
     if (this.signUpForm.valid) {
       const hashedPassword = bcrypt.hashSync(this.signUpForm.value.password, 10);
       const user = new User(
+        Date.now().toString(),
         this.signUpForm.value.fullName,
         this.signUpForm.value.email,
         hashedPassword,
         this.signUpForm.value.city,
         this.signUpForm.value.address,
         this.signUpForm.value.birthday,
-        'particulier'
+        'particulier',
+        'default.jpg',
+        undefined,
+        undefined,
+        undefined
       );
 
         
