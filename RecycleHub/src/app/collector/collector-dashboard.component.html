@@ -1,0 +1,103 @@
+<div class="min-h-screen bg-gray-100 p-6">
+  <nav class="bg-green-600 p-4 text-white rounded-lg shadow-md mb-6">
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-bold">Tableau de bord Collecteur</h1>
+      <div class="flex items-center space-x-4">
+        <span>{{ collector?.fullName }}</span>
+        <button (click)="onLogout()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-700">
+          Déconnexion
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Demandes disponibles -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-lg font-semibold mb-4">Demandes disponibles</h2>
+    <div *ngIf="availableDemands.length === 0" class="text-gray-500">
+      Aucune demande disponible dans votre zone de collecte.
+    </div>
+    <div class="grid gap-4">
+      <div *ngFor="let demand of availableDemands" class="border p-4 rounded">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-medium">Matériaux :</h3>
+            <ul class="list-disc pl-5">
+              <li *ngFor="let material of demand.materials">
+                {{ material.type }} - {{ material.weight }}kg
+              </li>
+            </ul>
+            <p>Adresse : {{ demand.address }}</p>
+            <p>Date : {{ demand.collectionDate | date }}</p>
+            <p>Créneau : {{ demand.timeSlot }}</p>
+          </div>
+          <button 
+            (click)="acceptDemand(demand)"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Accepter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demandes en cours -->
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-lg font-semibold mb-4">Mes collectes en cours</h2>
+    <div class="grid gap-4">
+      <div *ngFor="let demand of currentDemands" class="border p-4 rounded">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-medium">Matériaux :</h3>
+            <ul class="list-disc pl-5">
+              <li *ngFor="let material of demand.materials">
+                {{ material.type }} - {{ material.weight }}kg
+              </li>
+            </ul>
+            <p>Adresse : {{ demand.address }}</p>
+            <p>Status : {{ demand.status }}</p>
+          </div>
+          <div class="space-y-2">
+            <button *ngIf="demand.status === 'occupied'"
+              (click)="startCollection(demand)"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+              Commencer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de validation de collecte -->
+  <div *ngIf="selectedDemand" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg w-96">
+      <h2 class="text-lg font-semibold mb-4">Validation de la collecte</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium">Poids réel (kg)</label>
+          <input type="number" #realWeight class="mt-1 block w-full border rounded-md p-2"
+                 [value]="selectedDemand.totalWeight">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">Photos de vérification</label>
+          <input type="file" (change)="onVerificationPhotoSelect($event)" 
+                 multiple accept="image/*" class="mt-1 block w-full">
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <button (click)="rejectCollection(selectedDemand, 'Collecte rejetée par le collecteur')"
+                  class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            Rejeter
+          </button>
+          <button (click)="validateCollection(selectedDemand, +realWeight.value)"
+                  class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Valider
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

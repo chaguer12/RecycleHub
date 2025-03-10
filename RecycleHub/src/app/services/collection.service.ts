@@ -31,7 +31,7 @@ export class CollectionService {
     // Sauvegarder dans localStorage
     localStorage.setItem('collections', JSON.stringify(collections));
 
-    // Dispatch pour NgRx
+    // Dispatcher le NgRx
     this.store.dispatch(CollectionActions.createRequest({ request }));
   }
 
@@ -42,7 +42,7 @@ export class CollectionService {
       if (collectorId) {
         collection.collectorId = collectorId;
       }
-      // Mise à jour dans le store
+      
     }
   }
 

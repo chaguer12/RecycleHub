@@ -91,7 +91,7 @@ export class DemandService {
   private normalizeCity(city: string): string {
     return city.toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Enlève les accents
+      .replace(/[\u0300-\u036f]/g, '') 
       .trim();
   }
 

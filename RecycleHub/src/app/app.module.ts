@@ -14,12 +14,6 @@ import { DemandModule } from './demand/demand.module';
 import { UpdateProfileModalModule } from './update-profile-modal/update-profile-modal.module';
 import { HomeModule } from './home/home.module';
 import { CollectorModule } from './collector/collector.module';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../environments/environment';
-import { authReducer } from './store/reducers/auth.reducer';
-import { AuthEffects } from './store/effects/auth.effects';
 
 @NgModule({
   declarations: [
@@ -38,13 +32,7 @@ import { AuthEffects } from './store/effects/auth.effects';
     DemandModule,
     UpdateProfileModalModule,
     HomeModule,
-    CollectorModule,
-    StoreModule.forRoot({ auth: authReducer }),
-    EffectsModule.forRoot([AuthEffects]),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production
-    })
+    CollectorModule
   ],
   providers: [
     provideAnimationsAsync()

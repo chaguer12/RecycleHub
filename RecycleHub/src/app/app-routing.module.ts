@@ -16,7 +16,7 @@ const routes: Routes = [
   { 
     path: 'collector/dashboard', 
     component: CollectorDashboardComponent,
-    canActivate: [AuthGuard, CollectorGuard]
+    canActivate: [ CollectorGuard]
   },
   { path: '**', redirectTo: '' }
 ];

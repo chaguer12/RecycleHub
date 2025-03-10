@@ -1,0 +1,20 @@
+.bg-gray-100 {
+    background-image: url('../../assets/recycle.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+.demand-card {
+    transition: all 0.3s ease;
+}
+
+.demand-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay {
+    backdrop-filter: blur(4px);
+} 
